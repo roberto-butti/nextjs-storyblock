@@ -28,7 +28,6 @@ function Home({ctas}) {
             {...cta}
             />
           ))}
-
         </div>
       </main>
 
