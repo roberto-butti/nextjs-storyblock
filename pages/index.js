@@ -3,7 +3,7 @@ import Image from 'next/image'
 import CallToAction from '../components/CallToAction'
 import styles from '../styles/Home.module.css'
 
-function Home({ctas}) {
+function Home({ ctas }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -23,10 +23,8 @@ function Home({ctas}) {
         </p>
 
         <div className={styles.grid}>
-          {ctas.map((cta, i ) => (
-            <CallToAction key={i}
-            {...cta}
-            />
+          {ctas.map((cta, i) => (
+            <CallToAction key={i} {...cta} />
           ))}
         </div>
       </main>
@@ -50,7 +48,6 @@ function Home({ctas}) {
 // It won't be called on client-side, so you can even do
 // direct database queries.
 export async function getStaticProps() {
-
   const ctas = [
     {
       url: "https://nextjs.org/docs",
@@ -72,8 +69,6 @@ export async function getStaticProps() {
       title: "Deploy",
       description: "Instantly deploy your Next.js site to a public URL with Vercel."
     },
-
-    
   ]
 
   // By returning { props: { posts } }, the Blog component
