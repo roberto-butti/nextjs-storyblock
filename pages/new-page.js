@@ -52,31 +52,34 @@ function Home({ ctas }) {
 export async function getStaticProps() {
   let preview = process.env.PREVIEW === 'true'
   // home is the default slug for the homepage in Storyblok
-  let slug = 'home'
+  let slug = 'new-page'
   // load the published content outside of the preview mode
   let sbParams = {
     version: 'published', // or 'published'
+    resolve_links: '1'
   }
 
   if (preview) {
     // load the draft version inside of the preview mode
     sbParams.version = 'draft'
     sbParams.cv = Date.now()
+    
   }
 
   let {data} = await Storyblok.get(`cdn/stories/${slug}`, sbParams)
 
-
+  console.log(data?.story?.content?.body[0].columns)
 
 
   // By returning { props: { ctas } }, the CallToAction components
   // will receive `ctas` as a prop at build time
-  // Strong Assumption: in the story
-  // data?.story?.content?.body
-  // there are Call To Action Components
+  // Strong Assumption: in the story as first element
+  // data?.story?.content?.body[0]
+  // there is a grid. In the grid (columns) there are
+  // Call To Action Components
   return {
     props: {
-      ctas: data?.story?.content?.body ? data?.story?.content?.body : [],
+      ctas: data?.story?.content?.body[0].columns ? data?.story?.content?.body[0].columns : [],
       preview,
 
     },
