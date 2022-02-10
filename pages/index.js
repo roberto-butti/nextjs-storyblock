@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import CallToAction from '../components/CallToAction'
+import Storyblok, {useStoryblok} from '../lib/storyblok'
+
 import styles from '../styles/Home.module.css'
 
 function Home({ ctas }) {
@@ -48,35 +50,37 @@ function Home({ ctas }) {
 // It won't be called on client-side, so you can even do
 // direct database queries.
 export async function getStaticProps() {
-  const ctas = [
-    {
-      url: "https://nextjs.org/docs",
-      title: "Documentation",
-      description: "Find in-depth information about Next.js features and API."
-    },
-    {
-      url: "https://nextjs.org/learn",
-      title: "Learn",
-      description: "Learn about Next.js in an interactive course with quizzes!"
-    },
-    {
-      url: "https://github.com/vercel/next.js/tree/master/examples",
-      title: "Examples",
-      description: "Discover and deploy boilerplate example Next.js projects."
-    },
-    {
-      url: "https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app",
-      title: "Deploy",
-      description: "Instantly deploy your Next.js site to a public URL with Vercel."
-    },
-  ]
+  let preview = process.env.PREVIEW === 'true'
+  // home is the default slug for the homepage in Storyblok
+  let slug = 'home'
+  // load the published content outside of the preview mode
+  let sbParams = {
+    version: 'published', // or 'published'
+  }
 
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
+  if (preview) {
+    // load the draft version inside of the preview mode
+    sbParams.version = 'draft'
+    sbParams.cv = Date.now()
+  }
+
+  let {data} = await Storyblok.get(`cdn/stories/${slug}`, sbParams)
+
+
+
+
+  // By returning { props: { ctas } }, the CallToAction components
+  // will receive `ctas` as a prop at build time
+  // Strong Assumption: in the story
+  // data?.story?.content?.body
+  // there are Call To Action Components
   return {
     props: {
-      ctas,
+      ctas: data?.story?.content?.body ? data?.story?.content?.body : [],
+      preview,
+
     },
+    revalidate: 3600, // revalidate every hour
   }
 }
 export default Home
