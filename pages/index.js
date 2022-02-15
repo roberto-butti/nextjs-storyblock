@@ -1,11 +1,15 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import CallToAction from '../components/CallToAction'
+import Header from '../components/Header'
 import Storyblok, {useStoryblok} from '../lib/storyblok'
 
 import styles from '../styles/Home.module.css'
 
-function Home({ ctas }) {
+function Home({  story }) {
+  const enableBridge = true; // load the storyblok bridge everywhere
+
+  story = useStoryblok(story, enableBridge);
   return (
     <div className={styles.container}>
       <Head>
@@ -15,19 +19,22 @@ function Home({ ctas }) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        {story.content.body.map(function(component, i) {
+            console.log(component.component)
+            if (component.component == "Header") {
+              return <Header key={component._uid} {...component} />
+            }
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+          })}
+
 
         <div className={styles.grid}>
-          {ctas.map((cta, i) => (
-            <CallToAction key={i} {...cta} />
-          ))}
+          {story.content.body.map(function(cta, i) {
+            if (cta.component == "Call To Action") {
+              return <CallToAction key={cta._uid} {...cta} />
+            }
+
+          })}
         </div>
       </main>
 
@@ -67,7 +74,7 @@ export async function getStaticProps() {
   let {data} = await Storyblok.get(`cdn/stories/${slug}`, sbParams)
 
 
-
+console.log(data?.story.content.body)
 
   // By returning { props: { ctas } }, the CallToAction components
   // will receive `ctas` as a prop at build time
@@ -76,7 +83,9 @@ export async function getStaticProps() {
   // there are Call To Action Components
   return {
     props: {
-      ctas: data?.story?.content?.body ? data?.story?.content?.body : [],
+      story: data ? data.story : false,
+      //story: data?.story.content.body,
+      //ctas: data?.story?.content?.body ? data?.story?.content?.body : [],
       preview,
 
     },
