@@ -1,8 +1,11 @@
 import CallToAction from "./CallToAction";
 import Placeholder from "./Placeholder";
+import Feature from "./Feature";
 
+// { "storyblok-component-name" : ReactComponent}
 const Components = {
     "Call To Action": CallToAction,
+    "feature": Feature
 };
 
 const DynamicComponent = ({ blok }) => {
