@@ -20,7 +20,7 @@ function Home({  story }) {
 
       <main className={styles.main}>
         {story.content.body.map(function(component, i) {
-            console.log(component.component)
+            //console.log(component.component)
             if (component.component == "Header") {
               return <Header key={component._uid} {...component} />
             }
@@ -74,7 +74,7 @@ export async function getStaticProps() {
   let {data} = await Storyblok.get(`cdn/stories/${slug}`, sbParams)
 
 
-console.log(data?.story.content.body)
+//console.log(data?.story.content.body)
 
   // By returning { props: { ctas } }, the CallToAction components
   // will receive `ctas` as a prop at build time

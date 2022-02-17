@@ -68,7 +68,7 @@ export async function getStaticProps() {
 
   let {data} = await Storyblok.get(`cdn/stories/${slug}`, sbParams)
 
-  console.log(data?.story?.content?.body[0].columns)
+  //console.log(data?.story?.content?.body[0].columns)
 
 
   // By returning { props: { ctas } }, the CallToAction components
